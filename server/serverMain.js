@@ -1,5 +1,21 @@
 Meteor.methods({
-    agg: function() {
+    idealMethod: function() {
+      console.log("Aggregate Method -- START");
+
+      Events.aggregate([{
+        $group : {
+            _id : "$name",
+            new: { $sum: 1},
+            count: { $sum: "$value"}
+        }
+      },
+      {$out : "idealcollection"}
+      //outputting to collection does not trigger the meteor magic. Which would be ideal. $out seems to be the issue.
+
+      ]);
+      console.log("Aggregate Method -- END");
+    },
+    notIdealMethod: function() {
       console.log("Aggregate Method -- START");
 
       results = Events.aggregate([{
@@ -8,18 +24,16 @@ Meteor.methods({
             new: { $sum: 1},
             count: { $sum: "$value"}
         }
-      },
-      {$out : "agg"}
-      //outputting to collection does not trigger the meteor magic. Which would be ideal. $out seems to be the issue.
+      }]);
 
-      ]);
       console.log("Aggregate Method -- END");
+
 
       //This section shows the workaround which is necessary.
       console.log("Persist agg -- START");
-      Alternate.remove({});
+      NotIdealCollection.remove({});
       results.forEach(function(el){
-        Alternate.insert({
+        NotIdealCollection.insert({
           event: el._id,
           count: el.count,
           new: el.new
@@ -28,6 +42,8 @@ Meteor.methods({
       );
       console.log("Persist agg -- END")
     }
+
 });
 
-Meteor.call('agg')
+Meteor.call('idealMethod');
+Meteor.call('notIdealMethod');

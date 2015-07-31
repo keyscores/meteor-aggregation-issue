@@ -1,17 +1,22 @@
 
 Template.hello.helpers({
   events:function () {
-        return EJSON.stringify(Events.find().fetch(), {indent: true});
+    return EJSON.stringify(Events.find().fetch(), {indent: true});
+
   },
   agg: function () {
-    return EJSON.stringify(Agg.find().fetch(), {indent: true});
+    return IdealCollection.find().fetch()[0].count
   },
-  alterate: function () {
-    return EJSON.stringify(Alternate.find().fetch(), {indent: true});
+  alternate: function () {
+    //return EJSON.stringify(NotIdealCollection.find().fetch(), {indent: true});
+    return NotIdealCollection.find().fetch()[0].count
   }
 });
 
-Template.hello.rendered = function () {
-	Tracker.autorun(function () {
-  });
-}
+Template.hello.events({
+  "click #button": function(){
+    Events.insert({name:"d",value:4});
+    Meteor.call("idealWay");
+    Meteor.call("notIdeal");
+  }
+});
