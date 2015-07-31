@@ -9,18 +9,27 @@
 </body>
 
 <template name="hello">
+  <h3> mongo.aggregate() using $out does not update the collection  </h3>
+
   <button id="button">Add Record and Aggregate</button>
   <br>
-    events
+
+  <h3> However other operations will work on that same collection created by .aggregate() with  $out </h3>
+
+  <button id="button2">Insert a record into IdealCollection</button>
+  <br>
+  <button id="button3">Remove a record from IdealCollection</button>
+  <br>
+    See the events
     <br>
     {{events}}
     <br>
-    agg
+    IdealCollection
     <br>
     {{agg}}
 
     <br>
-    alternate
+    NotIdealCollection
     <br>
     {{alternate}}
 </template>
