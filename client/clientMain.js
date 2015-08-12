@@ -1,9 +1,4 @@
-
 Template.hello.helpers({
-  // events:function () {
-  //   return EJSON.stringify(Events.find().fetch(), {indent: true});
-  //
-  // },
   worksButNotIdealHelper: function () {
     if ( worksButNotIdealCollection.find({event:"c"}).fetch() ) {
       return EJSON.stringify(worksButNotIdealCollection.find({event:"c"}).fetch()[0]);
@@ -23,7 +18,6 @@ Template.hello.helpers({
   showIdealCollectionRecord: function (){
     return EJSON.stringify(idealButBrokenCollection.find().fetch());
   }
-
 });
 
 Template.hello.events({
@@ -42,5 +36,4 @@ Template.hello.events({
   "click #remove": function(){
     idealButBrokenCollection.remove({_id:"a"});
   }
-
 });
