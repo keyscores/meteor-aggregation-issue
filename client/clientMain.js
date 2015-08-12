@@ -1,30 +1,46 @@
 
 Template.hello.helpers({
-  events:function () {
-    return EJSON.stringify(Events.find().fetch(), {indent: true});
-
+  // events:function () {
+  //   return EJSON.stringify(Events.find().fetch(), {indent: true});
+  //
+  // },
+  worksButNotIdealHelper: function () {
+    if ( worksButNotIdealCollection.find({event:"c"}).fetch() ) {
+      return EJSON.stringify(worksButNotIdealCollection.find({event:"c"}).fetch()[0]);
+    }
+    else {
+      return "No collection exists yet, push the button"
+    }
   },
-  agg: function () {
-    return EJSON.stringify(IdealCollection.find().fetch(), {indent: true});
+  idealButBrokenHelper: function () {
+    if ( EJSON.stringify(idealButBrokenCollection.find({_id:"c"}).fetch()[0]) ) {
+      return EJSON.stringify(idealButBrokenCollection.find({_id:"c"}).fetch()[0]);
+    }
+    else {
+      return "Error, the collection created by $out is not accessible"
+    }
   },
-  alternate: function () {
-    return EJSON.stringify(NotIdealCollection.find().fetch(), {indent: true});
-    //return NotIdealCollection.find().fetch()[0].count
+  showIdealCollectionRecord: function (){
+    return EJSON.stringify(idealButBrokenCollection.find().fetch());
   }
+
 });
 
 Template.hello.events({
-  "click #button": function(){
-    Events.insert({name:"d",value:4});
-    Meteor.call("idealMethod");
-    Meteor.call("notIdealMethod");
+  "click #works": function(){
+    Meteor.call("worksButNotIdealMethod");
   },
-  "click #button2": function(){
-    IdealCollection.insert({_id:"a", value:200});
+
+  "click #broken": function(){
+    Meteor.call("idealButBrokenMethod");
+  },
+
+  "click #add": function(){
+    idealButBrokenCollection.insert({_id:"new record", value:200});
 
   },
-  "click #button3": function(){
-    IdealCollection.remove({_id:"a"});
+  "click #remove": function(){
+    idealButBrokenCollection.remove({_id:"a"});
   }
 
 });

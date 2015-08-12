@@ -3,33 +3,40 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
+  <h1>collection.aggregate() $out issue</h1>
+  <h3>The problem: mongo.aggregate() using $out updates mongo perfectly, however the results are not reactive on the server nor client.  </h3>
 
   {{> hello}}
 </body>
 
 <template name="hello">
-  <h3> mongo.aggregate() using $out does not update the collection  </h3>
+  <h3>1.  The expected outcome (using an expensive, not ideal solution) </h3>
+  <p> I should get event:"c",  aggregated: 6 after pushing the button below </p>
 
-  <button id="button">Add Record and Aggregate</button>
+  <button id="works">Aggregate using worksButNotIdealMethod </button>
   <br>
+ {{worksButNotIdealHelper}}
 
-  <h3> However other operations will work on that same collection created by .aggregate() with  $out </h3>
+ <h3>2. There is a bug using aggregate([{$out}] )  </h3>
+ <p> Same as above, I should get event:"c",  aggregated: 6 after pushing the button below </p>
 
-  <button id="button2">Insert a record into IdealCollection</button>
+ <button id="broken">Aggregate using idealButBrokenMethod </button>
+ <br>
+ {{idealButBrokenHelper}}
+
+ <p> Now check the mongo db, and you will see the collection in fact exists. </p>
+
+ <h3>3. Strangely, the collection created by aggregate([{$out}]) exists, and is reactive.</h3>
+  <p>  ...and is reactive using other methods </p>
+
+  <button id="add">Insert _id:"new record" doc into IdealCollection</button>
   <br>
-  <button id="button3">Remove a record from IdealCollection</button>
+  <button id="remove">Remove _id:"a" doc from IdealCollection</button>
   <br>
-    See the events
+    IdealCollection:
     <br>
-    {{events}}
-    <br>
-    IdealCollection
-    <br>
-    {{agg}}
+    {{showIdealCollectionRecord}}
 
-    <br>
-    NotIdealCollection
-    <br>
-    {{alternate}}
+  <h3> 4. Refresh the page </h3>
+  <p> all changes are up to date, just not reactive </p>
 </template>

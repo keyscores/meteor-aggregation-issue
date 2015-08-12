@@ -1,49 +1,73 @@
-Meteor.methods({
-    idealMethod: function() {
-      console.log("Aggregate Method -- START");
+Meteor.startup(function () {
+  idealButBrokenCollection.remove({});
+  worksButNotIdealCollection.remove({});
+});
 
-      Events.aggregate([{
+//Check if the server is receiving the changes
+// The changes to IdealCollection are not observable on the server. Only on restarting the server will you see the console.log below
+
+
+worksButNotIdealCollection.find({}).observeChanges({
+  added: function (id, fields){
+    console.log(fields);
+  }
+});
+
+worksButNotIdealCollection.find({}).observeChanges({
+  added: function (id, fields){
+    console.log(fields);
+  }
+});
+
+Meteor.methods({
+    //This is the method which reproduces the bug using collection.aggregate()
+    idealButBrokenMethod: function() {
+      console.log("idealButBrokenMethod -- Single step Aggregation -- START");
+
+      Events.aggregate([
+      {
         $group : {
             _id : "$name",
             new: { $sum: 1},
             count: { $sum: "$value"}
         }
       },
-      {$out : "idealcollection"}
+      // CRUCIALLY using $out will allow all calculations to happen on the mongo instance. The notIdealMethod below, will pull
+      // data back in to the webapp and then return it to mongo.
+      {
+        $out : "idealcollection"
+      }
       //outputting to collection does not trigger the meteor magic. Which would be ideal. $out seems to be the issue.
 
       ]);
-      console.log("Aggregate Method -- END");
+      console.log("idealButBrokenMethod -- Single step Aggregation -- END");
     },
-    notIdealMethod: function() {
-      console.log("Aggregate Method -- START");
+
+    //This method does worth but it is expensive since it involves a round trip from mongo to the web app
+    worksButNotIdealMethod: function() {
+      console.log("START -- worksButNotIdealMethod - 1 Aggregate");
 
       results = Events.aggregate([{
         $group : {
             _id : "$name",
-            new: { $sum: 1},
-            count: { $sum: "$value"}
+            aggregated: { $sum: "$value"}
         }
       }]);
 
-      console.log("Aggregate Method -- END");
+      console.log("END -- worksButNotIdealMethod - 1 Aggregate");
 
 
       //This section shows the workaround which is necessary.
-      console.log("Persist agg -- START");
-      NotIdealCollection.remove({});
+      console.log("START -- worksButNotIdealMethod -- 2 Return to Web app Persist");
+      worksButNotIdealCollection.remove({});
       results.forEach(function(el){
-        NotIdealCollection.insert({
+        worksButNotIdealCollection.insert({
           event: el._id,
-          count: el.count,
-          new: el.new
+          aggregated: el.aggregated
           })
         }
       );
-      console.log("Persist agg -- END")
+      console.log("END -- worksButNotIdealMethod -- 2 Return to Web app Persist")
     }
 
 });
-
-Meteor.call('idealMethod');
-Meteor.call('notIdealMethod');
