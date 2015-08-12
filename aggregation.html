@@ -1,11 +1,10 @@
 <head>
-  <title>aggregation issue</title>
+<title>aggregation issue</title>
 </head>
 
 <body>
   <h1>collection.aggregate() $out issue</h1>
   <h3>The problem: mongo.aggregate() using $out updates mongo perfectly, however the results are not reactive on the server nor client.  </h3>
-
   {{> hello}}
 </body>
 
@@ -15,28 +14,30 @@
 
   <button id="works">Aggregate using worksButNotIdealMethod </button>
   <br>
- {{worksButNotIdealHelper}}
+  <p style="color:red">
+    {{worksButNotIdealHelper}}
+  </p>
 
- <h3>2. There is a bug using aggregate([{$out}] )  </h3>
- <p> Same as above, I should get event:"c",  aggregated: 6 after pushing the button below </p>
+  <h3>2. There is a bug using aggregate([{$out}] )  </h3>
+  <p> The button below should produce the same result. Though nothing happens in the UI. </p>
+  <p>However in the Mongo console all data appear as expected.</p>
 
- <button id="broken">Aggregate using idealButBrokenMethod </button>
- <br>
- {{idealButBrokenHelper}}
+  <button id="broken">Aggregate using idealButBrokenMethod </button>
+  <br>
+  <div style="color:red">
+    {{idealButBrokenHelper}}
+  </div>
 
- <p> Now check the mongo db, and you will see the collection in fact exists. </p>
 
- <h3>3. Strangely, the collection created by aggregate([{$out}]) exists, and is reactive.</h3>
-  <p>  ...and is reactive using other methods </p>
+  <h3>3. Strangely, the collection created by aggregate([{$out}]) exists, and is reactive.</h3>
+  <p>  Adding a doc to the collection is reactive. </p>
 
   <button id="add">Insert _id:"new record" doc into IdealCollection</button>
   <br>
-  <button id="remove">Remove _id:"a" doc from IdealCollection</button>
-  <br>
-    IdealCollection:
-    <br>
-    {{showIdealCollectionRecord}}
-
-  <h3> 4. Refresh the page </h3>
-  <p> all changes are up to date, just not reactive </p>
+  idealButBrokenCollection:
+  <div style="color:red">
+    {{showIdealButBrokenCollection}}
+  </div>
+  <h3> RESET </h3>
+  Reset all aggregate collections<button id="reset">Reset </button>
 </template>

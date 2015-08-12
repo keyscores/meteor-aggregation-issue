@@ -1,21 +1,23 @@
 Template.hello.helpers({
   worksButNotIdealHelper: function () {
-    if ( worksButNotIdealCollection.find({event:"c"}).fetch() ) {
-      return EJSON.stringify(worksButNotIdealCollection.find({event:"c"}).fetch()[0]);
+    query = EJSON.stringify(worksButNotIdealCollection.find({event:"c"}).fetch()[0])
+    if (query) {
+      return query;
     }
     else {
       return "No collection exists yet, push the button"
     }
   },
   idealButBrokenHelper: function () {
-    if ( EJSON.stringify(idealButBrokenCollection.find({_id:"c"}).fetch()[0]) ) {
-      return EJSON.stringify(idealButBrokenCollection.find({_id:"c"}).fetch()[0]);
+    query =  EJSON.stringify(idealButBrokenCollection.find({_id:"c"}).fetch()[0])
+    if (query) {
+      return query;
     }
     else {
-      return "Error, the collection created by $out is not accessible"
+      return "Error: cannot read the collection idealButBrokenCollection. Check mongo console with >meteor mongo"
     }
   },
-  showIdealCollectionRecord: function (){
+  showIdealButBrokenCollection: function (){
     return EJSON.stringify(idealButBrokenCollection.find().fetch());
   }
 });
@@ -35,5 +37,8 @@ Template.hello.events({
   },
   "click #remove": function(){
     idealButBrokenCollection.remove({_id:"a"});
+  },
+  "click #reset": function(){
+    Meteor.call("reset");
   }
 });
