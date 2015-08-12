@@ -22,6 +22,7 @@ worksButNotIdealCollection.find({}).observeChanges({
   }
 });
 // nothing gets observed from this collection when aggregate.({$out}) is used
+// strangely, if this next cblock is removed, the UI will update data on browser refreshes.
 idealButBrokenCollection.find({}).observeChanges({
   added: function (id, aggregated){
     console.log(aggregated);
