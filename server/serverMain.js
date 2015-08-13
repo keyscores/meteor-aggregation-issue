@@ -48,9 +48,9 @@ Meteor.methods({
         // Initially some users suggested that the _id generation could be the problem.
         // To eliminate that possibility, aggregate's $project could be used to drop the _id and use mongos ObjectId to generate new _id.
         //Including or excluding this step produces the same bug.
-        {
-          $project : { _id: false, aggregated :1, name: "$_id" }
-        },
+        //{
+        //  $project : { _id: false, aggregated :1, name: "$_id" }
+        //},
 
         // $OUT
         // IDEALLY Using $out would allow all calculations to happen on the mongo server.
