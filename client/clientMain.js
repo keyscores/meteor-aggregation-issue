@@ -9,7 +9,7 @@ Template.hello.helpers({
     }
   },
   idealButBrokenHelper: function () {
-    query =  EJSON.stringify(idealButBrokenCollection.find({_id:"c"}).fetch()[0])
+    query =  EJSON.stringify(idealButBrokenCollection.find({_id:"c"}).fetch()[0],null)
     if (query) {
       return query;
     }

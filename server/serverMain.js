@@ -30,7 +30,9 @@ idealButBrokenCollection.find({}).observeChanges({
 });
 
 // AGGREGATION METHODS
+// The first method is the one with a bug. The second one successfully shows the desired behavior, but is quite expensive.
 Meteor.methods({
+    //IDEAL, BUT BROKEN METHOD
     //This is the method which reproduces the bug using collection.aggregate()
     idealButBrokenMethod: function() {
       console.log("START -- idealButBrokenMethod -- Single step Aggregation");
@@ -41,16 +43,28 @@ Meteor.methods({
             aggregated: { $sum: "$value"}
           }
         },
+
+        //$PROJECT
+        // Initially some users suggested that the _id generation could be the problem.
+        // To eliminate that possibility, aggregate's $project could be used to drop the _id and use mongos ObjectId to generate new _id.
+        //
+        {
+          $project : { _id: false, aggregated :1, name: "$_id" }
+        },
+
+        // $OUT
         // IDEALLY Using $out would allow all calculations to happen on the mongo server.
         // The worksButNotIdealMethod below, will pull
         // data back in to the webapp and then return it to mongo.
         // outputting to collection does not trigger the meteor magic.
         {
-         $out : "idealcollection"
+          $out : "idealcollection"
         }
       ]);
       console.log("END -- idealButBrokenMethod -- Single step Aggregation");
     },
+
+    //EXAMPLE OF THE DESIRED FUNCTIONALITY
     //This method does work but it is expensive since it involves a round trip from mongo to the web app
     worksButNotIdealMethod: function() {
       console.log("START -- worksButNotIdealMethod - 1 Aggregate");
