@@ -20,7 +20,7 @@
 
   <h3>2. There is a bug using aggregate([{$out}] )  </h3>
   <p> The button below should produce the same result. Though nothing happens in the UI. </p>
-  <p>However in the Mongo console all data appear as expected.</p>
+  <p>(Check the Mongo console now. All data appear in the 'idealcollection' as expected.)</p>
 
   <button id="broken">Aggregate using idealButBrokenMethod </button>
   <br>
@@ -36,6 +36,22 @@
   <br>
   idealButBrokenCollection:
   <div style="color:red">
+    {{showIdealButBrokenCollection}}
+  </div>
+
+  <h3>4. Try it directly in mongo console</h3>
+  <p>  in your terminal >meteor mongo</p>
+  <p>  > db.events.aggregate([   {     $group : {       _id : "$name",       aggregated: { $sum: "$value"}     }   },   {$out : "idealcollection"} ])</p>
+  <div style="color:red">
+    <p> Nothing happens...</p>
+  </div>
+  <br>
+  <p>  Now try it and use Mongo's server-side copyTo() -- method deprecated after mongo 3.0</p>
+  <p> > db.events.aggregate([   {     $group : {       _id : "$name",       aggregated: { $sum: "$value"}     }   },   {$out : "temp"} ])</p>
+  <p> > db.temp.copyTo("idealcollection") </p>
+
+  <div style="color:red">
+    <p> REACTIVE!!!</p>
     {{showIdealButBrokenCollection}}
   </div>
   <h3> RESET </h3>

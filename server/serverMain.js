@@ -61,6 +61,7 @@ Meteor.methods({
           $out : "idealcollection"
         }
       ]);
+
       console.log("END -- idealButBrokenMethod -- Single step Aggregation");
     },
 
