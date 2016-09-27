@@ -1,1 +1,3 @@
-FROM meteorhacks/meteord:onbuild
+#FROM meteorhacks/meteord:onbuild
+FROM    quay.io/chriswessels/meteor-tupperware
+
